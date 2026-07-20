@@ -8,9 +8,16 @@
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        .header { text-align: center; border-bottom: 2px solid #df5a35; padding-bottom: 20px; margin-bottom: 20px; }
-        .header h1 { margin: 0; color: #df5a35; }
-        .header p { margin: 5px 0 0; color: #666; }
+        /* Header Layout dengan Logo */
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #df5a35; padding-bottom: 20px; margin-bottom: 20px; }
+        .header-left { width: 40%; text-align: left; }
+        .header-left img { max-width: 200px; max-height: 80px; object-fit: contain; display: none; margin-bottom: 5px; }
+        .header-left input[type="file"] { font-size: 12px; display: block; margin-bottom: 3px; }
+        .header-left small { color: #888; font-size: 12px; display: block; }
+        
+        .header-right { width: 60%; text-align: right; }
+        .header-right h1 { margin: 0; color: #df5a35; font-size: 26px; }
+        .header-right p { margin: 5px 0 0; color: #666; font-size: 16px; }
 
         /* Summary Cards */
         .summary { display: flex; justify-content: space-between; margin-bottom: 30px; gap: 15px; }
@@ -54,23 +61,33 @@
         @media print {
             body { background-color: #fff; padding: 0; }
             .container { box-shadow: none; padding: 0; border: none; max-width: 100%; }
-            .form-box, .actions, .col-aksi { display: none !important; }
+            .form-box, .actions, .col-aksi, .hide-on-print { display: none !important; }
             .card { color: #000 !important; background-color: #fff !important; border: 1px solid #000; }
             .header { border-bottom-color: #000; }
             th { background-color: #eee !important; color: #000 !important; border: 1px solid #000; }
             td { border: 1px solid #000; }
-            .text-masuk, .text-keluar { color: #000 !important; } /* Hitam saat dicetak agar tinta jelas */
+            .text-masuk, .text-keluar { color: #000 !important; } 
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    
+    <!-- HEADER -->
     <div class="header">
-        <h1>LAPORAN KEUANGAN BENDAHARA</h1>
-        <p>Instanusantara Indonesia</p>
+        <div class="header-left">
+            <img id="logoImage" src="" alt="Logo Instanusantara">
+            <input type="file" id="logoInput" accept="image/*" class="hide-on-print">
+            <small class="hide-on-print">*Upload LOGO.png di sini</small>
+        </div>
+        <div class="header-right">
+            <h1>LAPORAN KEUANGAN</h1>
+            <p>Instanusantara Indonesia</p>
+        </div>
     </div>
 
+    <!-- SUMMARY CARDS -->
     <div class="summary">
         <div class="card card-masuk">
             <h3>Total Pemasukan</h3>
@@ -138,6 +155,22 @@
 
     // Set tanggal hari ini sebagai default di form
     document.getElementById('inputTanggal').valueAsDate = new Date();
+
+    // Fungsi Upload Logo
+    const logoInput = document.getElementById('logoInput');
+    const logoImage = document.getElementById('logoImage');
+    if(logoInput && logoImage) {
+        logoInput.addEventListener('change', function() {
+            if (this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoImage.src = e.target.result;
+                    logoImage.style.display = 'block';
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
 
     // Format mata uang
     function formatRupiah(angka) {
