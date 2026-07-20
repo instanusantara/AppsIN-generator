@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Placement Campaign</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* Typography & Inputs */
+        h1, h2, h3, p { margin: 0; }
+        input, textarea { font-family: inherit; font-size: inherit; color: inherit; border: 1px solid transparent; outline: none; width: 100%; background: transparent; }
+        input:focus, textarea:focus { border-bottom: 1px dashed #df5a35; background-color: #fff9f7; }
+        textarea { resize: none; overflow: hidden; }
+
+        /* Header */
+        .header { text-align: left; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 15px; }
+        .header h1 { font-size: 28px; color: #222; margin-bottom: 5px; }
+        .header .subtitle { font-size: 18px; font-weight: bold; color: #df5a35; margin-bottom: 5px; }
+        .header .date-row { display: flex; align-items: center; font-size: 14px; color: #666; }
+        .header .date-row input { width: 150px; margin-left: 5px; font-weight: bold; color: #333; }
+
+        /* Highlight Cards */
+        .highlight-cards { display: flex; gap: 15px; margin-bottom: 30px; }
+        .card { flex: 1; background-color: #f8f9fa; border-left: 4px solid #df5a35; padding: 15px; border-radius: 4px; }
+        .card.dark { border-left-color: #222; }
+        .card h3 { font-size: 12px; text-transform: uppercase; color: #666; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .card .value { font-size: 28px; font-weight: bold; color: #222; }
+        .card input.value-input { font-size: 28px; font-weight: bold; color: #222; padding: 0; }
+
+        /* Sections */
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 16px; font-weight: bold; background-color: #222; color: white; padding: 8px 12px; margin-bottom: 10px; border-radius: 2px; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; vertical-align: top; }
+        th { background-color: #f8f9fa; text-align: left; font-weight: bold; color: #444; }
+        td:first-child { width: 35%; font-weight: 500; background-color: #fafafa; }
+        
+        /* Table Auto-Sum Styling */
+        .calc-input { text-align: left; font-weight: bold; }
+
+        /* Text Block */
+        .text-block { font-size: 14px; line-height: 1.6; }
+        .text-block textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid #eee; border-radius: 4px; }
+
+        /* Lampiran / Screenshots Grid */
+        .lampiran-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+        .lampiran-item { border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 4px; background: #fafafa; display: flex; flex-direction: column; justify-content: space-between; }
+        .lampiran-item img { max-width: 100%; max-height: 250px; object-fit: contain; margin-bottom: 10px; display: none; margin-left: auto; margin-right: auto; }
+        .lampiran-item input[type="file"] { font-size: 11px; margin-bottom: 10px; width: 100%; }
+        .lampiran-item input[type="text"] { font-size: 12px; text-align: center; font-weight: bold; color: #555; border-bottom: 1px solid #ddd; }
+
+        /* Footer */
+        .footer-note { font-size: 12px; color: #888; text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 15px; }
+
+        /* Buttons */
+        .actions { text-align: right; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ccc; }
+        .btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .btn:hover { background-color: #0056b3; }
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            .actions, input[type="file"] { display: none !important; }
+            input, textarea { border: none !important; background: transparent !important; }
+            .lampiran-item { border: none; padding: 0; background: transparent; }
+            .section-title { -webkit-print-color-adjust: exact; color-adjust: exact; background-color: #222 !important; color: white !important; }
+            .card { -webkit-print-color-adjust: exact; color-adjust: exact; background-color: #f8f9fa !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Laporan Placement Campaign</h1>
+        <input type="text" class="subtitle" value="Lensa Challenge 2026: Setengah Jalan - 'KV Challenge'">
+        <div class="date-row">
+            Tanggal Laporan: <input type="text" id="tanggalLaporan" value="20 Juli 2026">
+        </div>
+    </div>
+
+    <!-- HIGHLIGHTS -->
+    <div class="highlight-cards">
+        <div class="card">
+            <h3>Total Tayangan</h3>
+            <div class="value" id="totalTayangan">0</div>
+        </div>
+        <div class="card">
+            <h3>Total Interaksi</h3>
+            <div class="value" id="totalInteraksi">0</div>
+        </div>
+        <div class="card dark">
+            <h3>Total Grup WA</h3>
+            <input type="text" class="value-input" value="32">
+        </div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section">
+        <div class="section-title">1. Ringkasan Eksekusi Campaign</div>
+        <table>
+            <tr>
+                <td>Nama Kampanye</td>
+                <td><input type="text" value="KV Challenge Gratis Ke Sumba"></td>
+            </tr>
+            <tr>
+                <td>Penempatan (Placement)</td>
+                <td><textarea rows="2">Instagram Feed @instanusantara, Threads @instanusantara (Bonus), Berita Mikro (Bonus Web), dan 32 Grup WA Regional</textarea></td>
+            </tr>
+            <tr>
+                <td>Tautan IG Feed</td>
+                <td><input type="text" value="https://www.instagram.com/p/Da2yLPuE9vT/"></td>
+            </tr>
+            <tr>
+                <td>Tautan Artikel Web</td>
+                <td><input type="text" value="https://beritamikro.com/artikel/..."></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section">
+        <div class="section-title">2. Performa Instagram Feed (@instanusantara)</div>
+        <table>
+            <tr><th>METRIK</th><th>JUMLAH</th></tr>
+            <tr>
+                <td>Tayangan (Impressions)</td>
+                <td><input type="text" class="calc-input tayangan-val" value="6.915" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+            <tr>
+                <td>Akun yang dijangkau (Reach)</td>
+                <td><input type="text" class="calc-input" value="2.741" oninput="formatNumberInput(this)"></td>
+            </tr>
+            <tr>
+                <td>Suka (Likes)</td>
+                <td><input type="text" class="calc-input interaksi-val" value="212" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+            <tr>
+                <td>Komentar (Comments)</td>
+                <td><input type="text" class="calc-input interaksi-val" value="28" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+            <tr>
+                <td>Dibagikan (Shares)</td>
+                <td><input type="text" class="calc-input interaksi-val" value="39" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+            <tr>
+                <td>Disimpan (Saves)</td>
+                <td><input type="text" class="calc-input interaksi-val" value="43" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+            <tr>
+                <td>Kunjungan Profil</td>
+                <td><input type="text" class="calc-input" value="16" oninput="formatNumberInput(this)"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section">
+        <div class="section-title">3. Bonus: Performa Akun Threads (@instanusantara)</div>
+        <table>
+            <tr><th>METRIK</th><th>JUMLAH</th></tr>
+            <tr>
+                <td>Total Tayangan (Views)</td>
+                <td><input type="text" class="calc-input tayangan-val" value="742" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section">
+        <div class="section-title">4. Bonus: Publikasi Portal Berita (Berita Mikro)</div>
+        <div style="font-size: 13px; margin-bottom: 5px; color: #555;">
+            <input type="text" value="Campaign juga dipublikasikan dalam bentuk artikel laporan warga di media Berita Mikro.">
+        </div>
+        <table>
+            <tr><th>METRIK</th><th>JUMLAH</th></tr>
+            <tr>
+                <td>Total Dibaca (Views)</td>
+                <td><input type="text" class="calc-input tayangan-val" value="822" oninput="formatNumberInput(this); calculateTotals();"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section">
+        <div class="section-title">5. Distribusi WhatsApp Group Regional</div>
+        <div class="text-block">
+            <textarea rows="4">Materi kampanye telah berhasil disebarkan secara serentak (blast) ke 32 Grup WhatsApp Regional Instanusantara.&#10;• Format Blast: Pengiriman 5 gambar dan 1 video dan teks panduan (caption).&#10;• Status: Telah terkirim ke seluruh admin komunitas regional dan diteruskan ke grup terkait.</textarea>
+        </div>
+    </div>
+
+    <!-- LAMPIRAN (SCREENSHOTS) -->
+    <div class="section" style="page-break-inside: avoid;">
+        <div class="section-title">Lampiran: Bukti Tayang (Screenshots)</div>
+        <div class="lampiran-grid">
+            
+            <!-- Item 1 -->
+            <div class="lampiran-item">
+                <img id="img1" src="">
+                <input type="file" accept="image/*" onchange="previewImage(this, 'img1')">
+                <input type="text" value="Insight IG Feed">
+            </div>
+            
+            <!-- Item 2 -->
+            <div class="lampiran-item">
+                <img id="img2" src="">
+                <input type="file" accept="image/*" onchange="previewImage(this, 'img2')">
+                <input type="text" value="Insight Threads">
+            </div>
+
+            <!-- Item 3 -->
+            <div class="lampiran-item">
+                <img id="img3" src="">
+                <input type="file" accept="image/*" onchange="previewImage(this, 'img3')">
+                <input type="text" value="Bukti Blast WA - 1">
+            </div>
+
+            <!-- Item 4 -->
+            <div class="lampiran-item">
+                <img id="img4" src="">
+                <input type="file" accept="image/*" onchange="previewImage(this, 'img4')">
+                <input type="text" value="Bukti Blast WA - 2">
+            </div>
+
+            <!-- Item 5 -->
+            <div class="lampiran-item">
+                <img id="img5" src="">
+                <input type="file" accept="image/*" onchange="previewImage(this, 'img5')">
+                <input type="text" value="Artikel Berita Mikro">
+            </div>
+            
+            <!-- Item 6 (Kosong untuk cadangan) -->
+            <div class="lampiran-item">
+                <img id="img6" src="">
+                <input type="file" accept="image/*" onchange="previewImage(this, 'img6')">
+                <input type="text" value="Lain-lain" placeholder="Keterangan gambar...">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-note">
+        Laporan ini dibuat secara otomatis berdasarkan data analitik per tanggal <span id="footerDate">20 Juli 2026</span>.
+    </div>
+
+    <div class="actions">
+        <button class="btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+    </div>
+
+</div>
+
+<script>
+    // Set format tanggal hari ini 
+    const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('tanggalLaporan').value = today;
+    document.getElementById('footerDate').innerText = today;
+
+    // Sinkronisasi tanggal footer jika input tanggal header diubah
+    document.getElementById('tanggalLaporan').addEventListener('input', function() {
+        document.getElementById('footerDate').innerText = this.value;
+    });
+
+    // Auto-resize textarea agar rapi
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(ta => {
+        ta.style.height = 'auto';
+        ta.style.height = (ta.scrollHeight) + 'px';
+        ta.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    });
+
+    // Format angka dengan titik (Contoh: 8.479)
+    function formatNumberInput(input) {
+        let value = input.value.replace(/[^0-9]/g, '');
+        if (value !== '') {
+            input.value = new Intl.NumberFormat('id-ID').format(value);
+        } else {
+            input.value = '0';
+        }
+    }
+
+    // Kalkulasi Total Tayangan & Interaksi Otomatis
+    function calculateTotals() {
+        // Hitung Tayangan (IG + Threads + Web)
+        let totalTayangan = 0;
+        document.querySelectorAll('.tayangan-val').forEach(input => {
+            const val = parseFloat(input.value.replace(/\./g, '')) || 0;
+            totalTayangan += val;
+        });
+        document.getElementById('totalTayangan').innerText = new Intl.NumberFormat('id-ID').format(totalTayangan);
+
+        // Hitung Interaksi (Likes + Comments + Shares + Saves)
+        let totalInteraksi = 0;
+        document.querySelectorAll('.interaksi-val').forEach(input => {
+            const val = parseFloat(input.value.replace(/\./g, '')) || 0;
+            totalInteraksi += val;
+        });
+        document.getElementById('totalInteraksi').innerText = new Intl.NumberFormat('id-ID').format(totalInteraksi);
+    }
+
+    // Preview Image Screenshot
+    function previewImage(input, imgId) {
+        const image = document.getElementById(imgId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                image.src = e.target.result;
+                image.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Jalankan kalkulasi saat aplikasi pertama dibuka
+    calculateTotals();
+</script>
+
+</body>
+</html>
