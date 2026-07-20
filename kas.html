@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Kas Bendahara Instanusantara</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .header { text-align: center; border-bottom: 2px solid #df5a35; padding-bottom: 20px; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: #df5a35; }
+        .header p { margin: 5px 0 0; color: #666; }
+
+        /* Summary Cards */
+        .summary { display: flex; justify-content: space-between; margin-bottom: 30px; gap: 15px; }
+        .card { flex: 1; padding: 20px; border-radius: 8px; text-align: center; color: white; font-weight: bold; }
+        .card-masuk { background-color: #28a745; }
+        .card-keluar { background-color: #dc3545; }
+        .card-saldo { background-color: #007bff; }
+        .card h3 { margin: 0 0 10px 0; font-size: 16px; opacity: 0.9; }
+        .card p { margin: 0; font-size: 24px; letter-spacing: 1px; }
+
+        /* Input Form */
+        .form-box { background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px; display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+        .input-group { display: flex; flex-direction: column; flex: 1; min-width: 150px; }
+        .input-group label { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .input-group input, .input-group select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; outline: none; }
+        .input-group input:focus, .input-group select:focus { border-color: #df5a35; }
+        .btn-add { background-color: #df5a35; color: white; border: none; padding: 11px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; height: 40px; }
+        .btn-add:hover { background-color: #c94c2a; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
+        th { background-color: #333; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f9f9f9; }
+        
+        .text-masuk { color: #28a745; font-weight: bold; }
+        .text-keluar { color: #dc3545; font-weight: bold; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
+        .btn-delete { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-delete:hover { background-color: #c82333; }
+
+        /* Actions */
+        .actions { display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px; }
+        .btn-print { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .btn-print:hover { background-color: #0056b3; }
+        .btn-reset { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        
+        /* Print Styles */
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .container { box-shadow: none; padding: 0; border: none; max-width: 100%; }
+            .form-box, .actions, .col-aksi { display: none !important; }
+            .card { color: #000 !important; background-color: #fff !important; border: 1px solid #000; }
+            .header { border-bottom-color: #000; }
+            th { background-color: #eee !important; color: #000 !important; border: 1px solid #000; }
+            td { border: 1px solid #000; }
+            .text-masuk, .text-keluar { color: #000 !important; } /* Hitam saat dicetak agar tinta jelas */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>LAPORAN KEUANGAN BENDAHARA</h1>
+        <p>Instanusantara Indonesia</p>
+    </div>
+
+    <div class="summary">
+        <div class="card card-masuk">
+            <h3>Total Pemasukan</h3>
+            <p id="sumMasuk">Rp 0</p>
+        </div>
+        <div class="card card-keluar">
+            <h3>Total Pengeluaran</h3>
+            <p id="sumKeluar">Rp 0</p>
+        </div>
+        <div class="card card-saldo">
+            <h3>Saldo Akhir</h3>
+            <p id="sumSaldo">Rp 0</p>
+        </div>
+    </div>
+
+    <!-- Form Input (Sembunyi saat di-print) -->
+    <div class="form-box">
+        <div class="input-group">
+            <label>Tanggal</label>
+            <input type="date" id="inputTanggal">
+        </div>
+        <div class="input-group">
+            <label>Jenis</label>
+            <select id="inputJenis">
+                <option value="masuk">Pemasukan (+)</option>
+                <option value="keluar">Pengeluaran (-)</option>
+            </select>
+        </div>
+        <div class="input-group" style="flex: 2;">
+            <label>Keterangan</label>
+            <input type="text" id="inputKeterangan" placeholder="Contoh: Iuran anggota, Bayar server...">
+        </div>
+        <div class="input-group">
+            <label>Nominal (Rp)</label>
+            <input type="text" id="inputNominal" placeholder="0" oninput="formatRupiahInput(this)">
+        </div>
+        <button class="btn-add" onclick="tambahTransaksi()">+ Tambah</button>
+    </div>
+
+    <!-- Tabel Data -->
+    <table id="tabelKas">
+        <thead>
+            <tr>
+                <th width="15%">Tanggal</th>
+                <th width="35%">Keterangan</th>
+                <th width="20%" class="text-right">Pemasukan</th>
+                <th width="20%" class="text-right">Pengeluaran</th>
+                <th width="10%" class="text-center col-aksi">Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- Data akan muncul di sini -->
+        </tbody>
+    </table>
+
+    <div class="actions">
+        <button class="btn-reset" onclick="resetData()">Kosongkan Semua Data</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+    </div>
+</div>
+
+<script>
+    // Ambil data dari Local Storage atau buat array kosong jika belum ada
+    let kasData = JSON.parse(localStorage.getItem('bendaharaInstanusantara')) || [];
+
+    // Set tanggal hari ini sebagai default di form
+    document.getElementById('inputTanggal').valueAsDate = new Date();
+
+    // Format mata uang
+    function formatRupiah(angka) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+    }
+
+    // Format input nominal saat diketik
+    function formatRupiahInput(input) {
+        let value = input.value.replace(/[^0-9]/g, '');
+        input.value = value !== '' ? new Intl.NumberFormat('id-ID').format(value) : '';
+    }
+
+    // Tampilkan data ke tabel
+    function updateUI() {
+        const tbody = document.getElementById('dataBody');
+        tbody.innerHTML = '';
+        
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+
+        if (kasData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="color: #999;">Belum ada data transaksi.</td></tr>';
+        } else {
+            kasData.forEach((item, index) => {
+                // Konversi tanggal ke format rapi (contoh: 20 Jul 2026)
+                const tglObj = new Date(item.tanggal);
+                const tglRapi = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                const tr = document.createElement('tr');
+                
+                let tdNominal = '';
+                if (item.jenis === 'masuk') {
+                    totalMasuk += item.nominal;
+                    tdNominal = `
+                        <td class="text-right text-masuk">${formatRupiah(item.nominal)}</td>
+                        <td class="text-right">-</td>
+                    `;
+                } else {
+                    totalKeluar += item.nominal;
+                    tdNominal = `
+                        <td class="text-right">-</td>
+                        <td class="text-right text-keluar">${formatRupiah(item.nominal)}</td>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td>${tglRapi}</td>
+                    <td>${item.keterangan}</td>
+                    ${tdNominal}
+                    <td class="text-center col-aksi"><button class="btn-delete" onclick="hapusTransaksi(${index})">Hapus</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Update Ringkasan
+        const saldoAkhir = totalMasuk - totalKeluar;
+        document.getElementById('sumMasuk').innerText = formatRupiah(totalMasuk);
+        document.getElementById('sumKeluar').innerText = formatRupiah(totalKeluar);
+        document.getElementById('sumSaldo').innerText = formatRupiah(saldoAkhir);
+    }
+
+    // Tambah transaksi baru
+    function tambahTransaksi() {
+        const tanggal = document.getElementById('inputTanggal').value;
+        const jenis = document.getElementById('inputJenis').value;
+        const keterangan = document.getElementById('inputKeterangan').value;
+        
+        // Bersihkan titik sebelum disimpan sebagai angka
+        const nominalStr = document.getElementById('inputNominal').value.replace(/\./g, '');
+        const nominal = parseFloat(nominalStr);
+
+        if (!tanggal || !keterangan || isNaN(nominal) || nominal <= 0) {
+            alert("Harap isi semua kolom dengan benar!");
+            return;
+        }
+
+        // Masukkan ke array
+        kasData.push({
+            tanggal: tanggal,
+            jenis: jenis,
+            keterangan: keterangan,
+            nominal: nominal
+        });
+
+        // Simpan ke Local Storage
+        localStorage.setItem('bendaharaInstanusantara', JSON.stringify(kasData));
+        
+        // Bersihkan form
+        document.getElementById('inputKeterangan').value = '';
+        document.getElementById('inputNominal').value = '';
+        
+        // Perbarui tampilan
+        updateUI();
+    }
+
+    // Hapus transaksi
+    function hapusTransaksi(index) {
+        if (confirm("Yakin ingin menghapus transaksi ini?")) {
+            kasData.splice(index, 1); // Hapus 1 item dari array
+            localStorage.setItem('bendaharaInstanusantara', JSON.stringify(kasData)); // Update storage
+            updateUI();
+        }
+    }
+
+    // Kosongkan semua data
+    function resetData() {
+        if (confirm("PERINGATAN! Ini akan menghapus SEMUA data buku kas. Pastikan sudah dicetak/PDF sebelum dihapus. Lanjutkan?")) {
+            kasData = [];
+            localStorage.removeItem('bendaharaInstanusantara');
+            updateUI();
+        }
+    }
+
+    // Load data pertama kali saat aplikasi dibuka
+    updateUI();
+</script>
+
+</body>
+</html>
