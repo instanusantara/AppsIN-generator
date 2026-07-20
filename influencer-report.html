@@ -82,7 +82,7 @@
             input, textarea { border: none !important; background: transparent !important; }
             .section-title { border-bottom-color: #000; }
             .post-card { break-inside: avoid; }
-            .post-card:has(img[style*="display: none"]) { display: none; } /* Sembunyikan post kosong */
+            .post-card:has(img[style*="display: none"]) { display: none; }
         }
     </style>
 </head>
@@ -94,10 +94,10 @@
     <div class="header">
         <div class="header-left">
             <h1>Influencer Program Report</h1>
-            <input type="text" class="campaign-name" value="OPPOCOMMXIN" placeholder="Nama Campaign">
+            <input type="text" class="campaign-name" value="" placeholder="Nama Campaign...">
             <div class="meta-info">
-                <div class="meta-row"><strong>Time Frame:</strong> <input type="text" value="May 19 - Jul 30, 2026"></div>
-                <div class="meta-row"><strong>Networks:</strong> <input type="text" value="Instagram, Threads, WhatsApp"></div>
+                <div class="meta-row"><strong>Time Frame:</strong> <input type="text" value="" placeholder="Tanggal Mulai - Selesai"></div>
+                <div class="meta-row"><strong>Networks:</strong> <input type="text" value="" placeholder="Instagram, Threads, dll"></div>
             </div>
         </div>
         <div class="header-right">
@@ -110,11 +110,7 @@
     <div class="section">
         <div class="section-title">Summary: About The Campaign</div>
         <div class="summary-box">
-            <textarea rows="4" placeholder="Tuliskan ringkasan campaign di sini...">18 Influencers published 88 Posts.
-Total Reach was 396.2K, with 2.8M Impressions and 0.93% Engagement Rate.
-Each post got an average of 289.3 Engagements, 4.5K Reach, and $4.6K EMV.
-Audience was 72% Men, mostly from Indonesia.
-The campaign generated $404.2K EMV.</textarea>
+            <textarea rows="4" placeholder="Tuliskan ringkasan / deskripsi hasil campaign di sini..."></textarea>
         </div>
     </div>
 
@@ -124,19 +120,19 @@ The campaign generated $404.2K EMV.</textarea>
         <div class="stats-grid">
             <div class="stat-card">
                 <h4>Posts</h4>
-                <input type="text" value="88">
+                <input type="text" value="0">
             </div>
             <div class="stat-card">
                 <h4>Engagements</h4>
-                <input type="text" value="25.5K">
+                <input type="text" value="0">
             </div>
             <div class="stat-card">
                 <h4>Reach</h4>
-                <input type="text" value="396.2K">
+                <input type="text" value="0">
             </div>
             <div class="stat-card">
                 <h4>EMV</h4>
-                <input type="text" value="$404.2K">
+                <input type="text" value="$0">
             </div>
         </div>
     </div>
@@ -147,26 +143,22 @@ The campaign generated $404.2K EMV.</textarea>
         <div class="demo-grid">
             <div class="demo-col">
                 <h4>Age & Gender</h4>
-                <div class="demo-item"><input type="text" class="label-input" value="18-24"> <input type="text" value="32%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="25-34"> <input type="text" value="46%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="35-49"> <input type="text" value="14%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="18-24"> <input type="text" value="0%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="25-34"> <input type="text" value="0%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="35-49"> <input type="text" value="0%"></div>
                 <div class="demo-item" style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
-                    <strong style="color: #2c3e50;">Top Gender:</strong> <input type="text" value="72% Men">
+                    <strong style="color: #2c3e50;">Top Gender:</strong> <input type="text" value="0%">
                 </div>
             </div>
             <div class="demo-col">
                 <h4>Top Countries</h4>
-                <div class="demo-item"><input type="text" class="label-input" value="Indonesia"> <input type="text" value="85%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="United States"> <input type="text" value="3%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="Italy"> <input type="text" value="1%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="United Kingdom"> <input type="text" value="1%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="Indonesia"> <input type="text" value="0%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="Lainnya"> <input type="text" value="0%"></div>
             </div>
             <div class="demo-col">
                 <h4>Top Interests</h4>
-                <div class="demo-item"><input type="text" class="label-input" value="Java"> <input type="text" value="20%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="Photography"> <input type="text" value="15%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="Captions"> <input type="text" value="15%"></div>
-                <div class="demo-item"><input type="text" class="label-input" value="Human Interest"> <input type="text" value="14%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="Photography"> <input type="text" value="0%"></div>
+                <div class="demo-item"><input type="text" class="label-input" value="Travel"> <input type="text" value="0%"></div>
             </div>
         </div>
     </div>
@@ -186,25 +178,11 @@ The campaign generated $404.2K EMV.</textarea>
             </thead>
             <tbody id="influencerBody">
                 <tr>
-                    <td><input type="text" value="Pilar Pratomo"></td>
-                    <td class="col-right"><input type="text" value="20"></td>
-                    <td class="col-right"><input type="text" value="1.65%"></td>
-                    <td class="col-right"><input type="text" value="160.9K"></td>
-                    <td class="col-right"><input type="text" value="$83.3K"></td>
-                </tr>
-                <tr>
-                    <td><input type="text" value="Anggit Priyandani R"></td>
-                    <td class="col-right"><input type="text" value="9"></td>
-                    <td class="col-right"><input type="text" value="1.92%"></td>
-                    <td class="col-right"><input type="text" value="15.3K"></td>
-                    <td class="col-right"><input type="text" value="$25.5K"></td>
-                </tr>
-                <tr>
-                    <td><input type="text" value="Imran Rosadi A.FPSI**"></td>
-                    <td class="col-right"><input type="text" value="9"></td>
-                    <td class="col-right"><input type="text" value="3.04%"></td>
-                    <td class="col-right"><input type="text" value="24.7K"></td>
-                    <td class="col-right"><input type="text" value="$41.6K"></td>
+                    <td><input type="text" value="" placeholder="Nama Influencer..."></td>
+                    <td class="col-right"><input type="text" value="0"></td>
+                    <td class="col-right"><input type="text" value="0%"></td>
+                    <td class="col-right"><input type="text" value="0"></td>
+                    <td class="col-right"><input type="text" value="$0"></td>
                 </tr>
             </tbody>
         </table>
@@ -224,12 +202,12 @@ The campaign generated $404.2K EMV.</textarea>
                 </div>
                 <div class="post-details">
                     <div class="post-metrics">
-                        <div>❤️ <input type="text" value="3.6K"></div>
-                        <div>💬 <input type="text" value="25"></div>
+                        <div>❤️ <input type="text" value="0"></div>
+                        <div>💬 <input type="text" value="0"></div>
                     </div>
-                    <div class="post-author"><input type="text" value="@instanusantara"></div>
-                    <div class="post-date"><input type="text" value="05/24/2026"></div>
-                    <div class="post-caption"><textarea placeholder="Tulis caption di sini...">Hatrick Juara PERSIB AINK... Shoot by OPPO X9 Ultra @oppocommunity.id @instanusantara...</textarea></div>
+                    <div class="post-author"><input type="text" value="" placeholder="@username"></div>
+                    <div class="post-date"><input type="text" value="" placeholder="DD/MM/YYYY"></div>
+                    <div class="post-caption"><textarea placeholder="Tulis caption di sini..."></textarea></div>
                 </div>
             </div>
 
@@ -241,12 +219,12 @@ The campaign generated $404.2K EMV.</textarea>
                 </div>
                 <div class="post-details">
                     <div class="post-metrics">
-                        <div>❤️ <input type="text" value="1.5K"></div>
-                        <div>💬 <input type="text" value="93"></div>
+                        <div>❤️ <input type="text" value="0"></div>
+                        <div>💬 <input type="text" value="0"></div>
                     </div>
-                    <div class="post-author"><input type="text" value="@dwijulian"></div>
-                    <div class="post-date"><input type="text" value="05/31/2026"></div>
-                    <div class="post-caption"><textarea placeholder="Tulis caption di sini...">Nih buat kalian yang kemarin penasaran banget dengan proses dan hasil video dari OPPO Find...</textarea></div>
+                    <div class="post-author"><input type="text" value="" placeholder="@username"></div>
+                    <div class="post-date"><input type="text" value="" placeholder="DD/MM/YYYY"></div>
+                    <div class="post-caption"><textarea placeholder="Tulis caption di sini..."></textarea></div>
                 </div>
             </div>
 
@@ -258,12 +236,12 @@ The campaign generated $404.2K EMV.</textarea>
                 </div>
                 <div class="post-details">
                     <div class="post-metrics">
-                        <div>❤️ <input type="text" value="670"></div>
-                        <div>💬 <input type="text" value="517"></div>
+                        <div>❤️ <input type="text" value="0"></div>
+                        <div>💬 <input type="text" value="0"></div>
                     </div>
-                    <div class="post-author"><input type="text" value="@instanusantara"></div>
-                    <div class="post-date"><input type="text" value="05/26/2026"></div>
-                    <div class="post-caption"><textarea placeholder="Tulis caption di sini...">Instanusantara x OPPO kembali hadir dengan challenge seru "WORDS CHALLENGE"...</textarea></div>
+                    <div class="post-author"><input type="text" value="" placeholder="@username"></div>
+                    <div class="post-date"><input type="text" value="" placeholder="DD/MM/YYYY"></div>
+                    <div class="post-caption"><textarea placeholder="Tulis caption di sini..."></textarea></div>
                 </div>
             </div>
 
