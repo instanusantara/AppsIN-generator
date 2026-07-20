@@ -135,11 +135,11 @@
             <table>
                 <tr>
                     <td style="text-align: right;">No Invoice :</td>
-                    <td><input type="text" value="INV/IN/2026/003"></td>
+                    <td><input type="text" placeholder="INV/IN/2026/000"></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">Tanggal :</td>
-                    <td><input type="text" value="16 Juli 2026" id="tanggalInvoice"></td>
+                    <td><input type="text" id="tanggalInvoice"></td>
                 </tr>
             </table>
         </div>
@@ -149,11 +149,9 @@
     <div class="info-section">
         <div class="client-info">
             <div class="client-title">Diberikan Kepada :</div>
-            <input type="text" class="client-name" value="Lensa Community">
-            <textarea rows="4" placeholder="Alamat & Kontak Klien">Komplek Rancho Indah, Jalan Tanjung 8 Blok A no. 2
-Tanjung Barat - Jakarta Selatan 12530
-twentyfourcontentstudio@gmail.com
-0878-6891-8488</textarea>
+            <!-- Dibuat Kosong dengan Placeholder -->
+            <input type="text" class="client-name" value="" placeholder="Nama Klien / Instansi">
+            <textarea rows="4" placeholder="Alamat Lengkap&#10;Email&#10;No. Telepon"></textarea>
         </div>
         
         <div class="payment-info">
@@ -190,13 +188,11 @@ twentyfourcontentstudio@gmail.com
         <tbody id="itemBody">
             <tr>
                 <td class="col-no">1</td>
-                <td class="col-desc"><textarea rows="3" placeholder="Deskripsi Produk">Jasa Placement Campaign 'KV Challenge'
-Detail: IG Feed @instanusantara +
-Blast 32 Grup WA Regional</textarea></td>
+                <!-- Dibuat Kosong dengan Placeholder -->
+                <td class="col-desc"><textarea rows="3" placeholder="Deskripsi Layanan / Produk / Detail Campaign..."></textarea></td>
                 <td class="col-qty"><input type="number" class="qty" value="1" min="1" onchange="calculateTotal()"></td>
-                <!-- Input type diubah jadi text agar bisa menerima titik -->
-                <td class="col-price"><input type="text" class="price" value="2.500.000" oninput="formatRupiahInput(this)"></td>
-                <td class="col-total row-total">Rp 2.500.000</td>
+                <td class="col-price"><input type="text" class="price" value="0" oninput="formatRupiahInput(this)"></td>
+                <td class="col-total row-total">Rp 0</td>
                 <td class="col-action hide-on-print"><button class="btn btn-remove" onclick="removeRow(this)">X</button></td>
             </tr>
         </tbody>
@@ -210,16 +206,15 @@ Blast 32 Grup WA Regional</textarea></td>
         <table class="summary-table">
             <tr>
                 <td>Sub-total</td>
-                <td id="subTotal">Rp 2.500.000</td>
+                <td id="subTotal">Rp 0</td>
             </tr>
             <tr>
                 <td>DP (Uang Muka)</td>
-                <!-- Input type diubah jadi text agar bisa menerima titik -->
-                <td><input type="text" id="dpInput" class="dp-input" value="1.000.000" oninput="formatRupiahInput(this)"></td>
+                <td><input type="text" id="dpInput" class="dp-input" value="0" oninput="formatRupiahInput(this)"></td>
             </tr>
             <tr class="sisa-row">
                 <td>Sisa Pelunasan</td>
-                <td id="sisaPelunasan">Rp 1.500.000</td>
+                <td id="sisaPelunasan">Rp 0</td>
             </tr>
         </table>
     </div>
@@ -230,12 +225,8 @@ Blast 32 Grup WA Regional</textarea></td>
         <div>
             <div class="box-title left">Note :</div>
             <div class="note-content">
-                <textarea>- Bukti Transfer DP ataupun
-Pelunasan dikirimkan ke PIC
-Instanusantara
-- Pelunasan setelah konten di
-Posting di Feed Instagram +
-Screenshoot blast WA grup</textarea>
+                <!-- Dibuat Kosong dengan Placeholder -->
+                <textarea placeholder="- Catatan pembayaran...&#10;- Ketentuan pelunasan..."></textarea>
             </div>
         </div>
         
@@ -279,6 +270,11 @@ Screenshoot blast WA grup</textarea>
 </div>
 
 <script>
+    // Format tanggal hari ini otomatis (Contoh: 20 Juli 2026)
+    const options = { day: 'numeric', month: 'Long', year: 'numeric' };
+    const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('tanggalInvoice').value = today;
+
     // Fungsi umum untuk upload gambar (Logo, TTD, & Footer)
     function setupImageUpload(inputId, imageId) {
         const input = document.getElementById(inputId);
@@ -310,14 +306,13 @@ Screenshoot blast WA grup</textarea>
 
     // Fungsi menambahkan titik otomatis saat diketik
     function formatRupiahInput(input) {
-        // Hapus karakter selain angka
         let value = input.value.replace(/[^0-9]/g, '');
         if (value !== '') {
             input.value = new Intl.NumberFormat('id-ID').format(value);
         } else {
-            input.value = '';
+            input.value = '0';
         }
-        calculateTotal(); // Hitung ulang setiap kali mengetik
+        calculateTotal();
     }
 
     // Kalkulasi
@@ -327,7 +322,6 @@ Screenshoot blast WA grup</textarea>
 
         rows.forEach(row => {
             const qty = parseFloat(row.querySelector('.qty').value) || 0;
-            // Menghilangkan titik sebelum dikalkulasi sistem
             const priceValue = row.querySelector('.price').value.replace(/\./g, ''); 
             const price = parseFloat(priceValue) || 0;
             
@@ -339,7 +333,6 @@ Screenshoot blast WA grup</textarea>
 
         document.getElementById('subTotal').innerText = formatRupiah(subTotal);
         
-        // Menghilangkan titik di DP sebelum dikalkulasi
         const dpValue = document.getElementById('dpInput').value.replace(/\./g, '');
         const dp = parseFloat(dpValue) || 0;
         
@@ -360,7 +353,7 @@ Screenshoot blast WA grup</textarea>
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="col-no"></td>
-            <td class="col-desc"><textarea rows="2" placeholder="Deskripsi Produk"></textarea></td>
+            <td class="col-desc"><textarea rows="2" placeholder="Deskripsi Produk..."></textarea></td>
             <td class="col-qty"><input type="number" class="qty" value="1" min="1" onchange="calculateTotal()"></td>
             <td class="col-price"><input type="text" class="price" value="0" oninput="formatRupiahInput(this)"></td>
             <td class="col-total row-total">Rp 0</td>
