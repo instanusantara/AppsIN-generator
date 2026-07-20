@@ -14,12 +14,16 @@
         input:focus, textarea:focus { border-bottom: 1px dashed #df5a35; background-color: #fff9f7; }
         textarea { resize: none; overflow: hidden; }
 
-        /* Header */
-        .header { text-align: left; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 15px; }
-        .header h1 { font-size: 28px; color: #222; margin-bottom: 5px; }
-        .header .subtitle { font-size: 18px; font-weight: bold; color: #df5a35; margin-bottom: 5px; }
-        .header .date-row { display: flex; align-items: center; font-size: 14px; color: #666; }
-        .header .date-row input { width: 150px; margin-left: 5px; font-weight: bold; color: #333; }
+        /* Header Layout (Dengan Logo) */
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 15px; }
+        .header-left { width: 70%; }
+        .header-left h1 { font-size: 28px; color: #222; margin-bottom: 5px; }
+        .header-left .subtitle { font-size: 18px; font-weight: bold; color: #df5a35; margin-bottom: 5px; }
+        .header-left .date-row { display: flex; align-items: center; font-size: 14px; color: #666; }
+        .header-left .date-row input { width: 150px; margin-left: 5px; font-weight: bold; color: #333; }
+        
+        .header-right { width: 30%; text-align: right; }
+        .header-right img { max-width: 100%; max-height: 80px; object-fit: contain; display: none; margin-left: auto; margin-bottom: 5px; }
 
         /* Highlight Cards */
         .highlight-cards { display: flex; gap: 15px; margin-bottom: 30px; }
@@ -55,6 +59,10 @@
 
         /* Footer */
         .footer-note { font-size: 12px; color: #888; text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 15px; }
+        
+        /* Footer Icons */
+        .footer-icons { text-align: center; margin-top: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .footer-icons img { max-height: 25px; display: none; }
 
         /* Buttons */
         .actions { text-align: right; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ccc; }
@@ -65,11 +73,14 @@
         @media print {
             body { background-color: #fff; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
-            .actions, input[type="file"] { display: none !important; }
+            .actions, .hide-on-print, input[type="file"] { display: none !important; }
             input, textarea { border: none !important; background: transparent !important; }
             .lampiran-item { border: none; padding: 0; background: transparent; }
             .section-title { -webkit-print-color-adjust: exact; color-adjust: exact; background-color: #222 !important; color: white !important; }
             .card { -webkit-print-color-adjust: exact; color-adjust: exact; background-color: #f8f9fa !important; }
+            
+            /* Sembunyikan lampiran yang kosong saat dicetak agar rapi */
+            .lampiran-item:has(img[style*="display: none"]) { display: none; }
         }
     </style>
 </head>
@@ -78,11 +89,19 @@
 <div class="container">
     
     <!-- HEADER -->
-    <div class="header">
-        <h1>Laporan Placement Campaign</h1>
-        <input type="text" class="subtitle" value="Lensa Challenge 2026: Setengah Jalan - 'KV Challenge'">
-        <div class="date-row">
-            Tanggal Laporan: <input type="text" id="tanggalLaporan" value="20 Juli 2026">
+    <div class="header-container">
+        <div class="header-left">
+            <h1>Laporan Placement Campaign</h1>
+            <input type="text" class="subtitle" value="" placeholder="Judul / Nama Laporan Campaign...">
+            <div class="date-row">
+                Tanggal Laporan: <input type="text" id="tanggalLaporan">
+            </div>
+        </div>
+        <div class="header-right">
+            <!-- Tempat Upload Logo Utama -->
+            <img id="logoImageTop" src="" alt="Logo Utama">
+            <input type="file" id="logoInputTop" accept="image/*" class="hide-on-print" style="font-size: 11px; display: block; margin-left: auto;">
+            <small class="hide-on-print" style="color: #888; display: block; margin-top: 2px;">*Upload LOGO_2.png</small>
         </div>
     </div>
 
@@ -98,7 +117,8 @@
         </div>
         <div class="card dark">
             <h3>Total Grup WA</h3>
-            <input type="text" class="value-input" value="32">
+            <!-- Diubah menjadi 0 default -->
+            <input type="text" class="value-input" value="0" oninput="formatNumberInput(this)">
         </div>
     </div>
 
@@ -108,91 +128,79 @@
         <table>
             <tr>
                 <td>Nama Kampanye</td>
-                <td><input type="text" value="KV Challenge Gratis Ke Sumba"></td>
+                <td><input type="text" value="" placeholder="Masukkan nama kampanye..."></td>
             </tr>
             <tr>
                 <td>Penempatan (Placement)</td>
-                <td><textarea rows="2">Instagram Feed @instanusantara, Threads @instanusantara (Bonus), Berita Mikro (Bonus Web), dan 32 Grup WA Regional</textarea></td>
+                <td><textarea rows="2" placeholder="Platform/channel penempatan campaign (misal: IG Feed, WA Grup, dll)..."></textarea></td>
             </tr>
             <tr>
-                <td>Tautan IG Feed</td>
-                <td><input type="text" value="https://www.instagram.com/p/Da2yLPuE9vT/"></td>
+                <td>Tautan Utama</td>
+                <td><input type="text" value="" placeholder="https://..."></td>
             </tr>
             <tr>
-                <td>Tautan Artikel Web</td>
-                <td><input type="text" value="https://beritamikro.com/artikel/..."></td>
+                <td>Tautan Lainnya (Opsional)</td>
+                <td><input type="text" value="" placeholder="https://..."></td>
             </tr>
         </table>
     </div>
 
     <!-- SECTION 2 -->
     <div class="section">
-        <div class="section-title">2. Performa Instagram Feed (@instanusantara)</div>
+        <div class="section-title">2. Performa Sosial Media Utama</div>
         <table>
             <tr><th>METRIK</th><th>JUMLAH</th></tr>
             <tr>
                 <td>Tayangan (Impressions)</td>
-                <td><input type="text" class="calc-input tayangan-val" value="6.915" oninput="formatNumberInput(this); calculateTotals();"></td>
+                <td><input type="text" class="calc-input tayangan-val" value="0" oninput="formatNumberInput(this); calculateTotals();"></td>
             </tr>
             <tr>
                 <td>Akun yang dijangkau (Reach)</td>
-                <td><input type="text" class="calc-input" value="2.741" oninput="formatNumberInput(this)"></td>
+                <td><input type="text" class="calc-input" value="0" oninput="formatNumberInput(this)"></td>
             </tr>
             <tr>
                 <td>Suka (Likes)</td>
-                <td><input type="text" class="calc-input interaksi-val" value="212" oninput="formatNumberInput(this); calculateTotals();"></td>
+                <td><input type="text" class="calc-input interaksi-val" value="0" oninput="formatNumberInput(this); calculateTotals();"></td>
             </tr>
             <tr>
                 <td>Komentar (Comments)</td>
-                <td><input type="text" class="calc-input interaksi-val" value="28" oninput="formatNumberInput(this); calculateTotals();"></td>
+                <td><input type="text" class="calc-input interaksi-val" value="0" oninput="formatNumberInput(this); calculateTotals();"></td>
             </tr>
             <tr>
                 <td>Dibagikan (Shares)</td>
-                <td><input type="text" class="calc-input interaksi-val" value="39" oninput="formatNumberInput(this); calculateTotals();"></td>
+                <td><input type="text" class="calc-input interaksi-val" value="0" oninput="formatNumberInput(this); calculateTotals();"></td>
             </tr>
             <tr>
                 <td>Disimpan (Saves)</td>
-                <td><input type="text" class="calc-input interaksi-val" value="43" oninput="formatNumberInput(this); calculateTotals();"></td>
+                <td><input type="text" class="calc-input interaksi-val" value="0" oninput="formatNumberInput(this); calculateTotals();"></td>
             </tr>
             <tr>
                 <td>Kunjungan Profil</td>
-                <td><input type="text" class="calc-input" value="16" oninput="formatNumberInput(this)"></td>
+                <td><input type="text" class="calc-input" value="0" oninput="formatNumberInput(this)"></td>
             </tr>
         </table>
     </div>
 
     <!-- SECTION 3 -->
     <div class="section">
-        <div class="section-title">3. Bonus: Performa Akun Threads (@instanusantara)</div>
+        <div class="section-title">3. Performa Ekstra / Bonus (Opsional)</div>
+        <div style="font-size: 13px; margin-bottom: 5px; color: #555;">
+            <input type="text" value="" placeholder="Keterangan tambahan untuk performa ekstra (misal: Publikasi Berita, Threads, dll)...">
+        </div>
         <table>
             <tr><th>METRIK</th><th>JUMLAH</th></tr>
             <tr>
-                <td>Total Tayangan (Views)</td>
-                <td><input type="text" class="calc-input tayangan-val" value="742" oninput="formatNumberInput(this); calculateTotals();"></td>
+                <td>Total Tayangan / Dibaca</td>
+                <td><input type="text" class="calc-input tayangan-val" value="0" oninput="formatNumberInput(this); calculateTotals();"></td>
             </tr>
         </table>
     </div>
 
     <!-- SECTION 4 -->
     <div class="section">
-        <div class="section-title">4. Bonus: Publikasi Portal Berita (Berita Mikro)</div>
-        <div style="font-size: 13px; margin-bottom: 5px; color: #555;">
-            <input type="text" value="Campaign juga dipublikasikan dalam bentuk artikel laporan warga di media Berita Mikro.">
-        </div>
-        <table>
-            <tr><th>METRIK</th><th>JUMLAH</th></tr>
-            <tr>
-                <td>Total Dibaca (Views)</td>
-                <td><input type="text" class="calc-input tayangan-val" value="822" oninput="formatNumberInput(this); calculateTotals();"></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- SECTION 5 -->
-    <div class="section">
-        <div class="section-title">5. Distribusi WhatsApp Group Regional</div>
+        <div class="section-title">4. Distribusi Pesan / Komunitas</div>
         <div class="text-block">
-            <textarea rows="4">Materi kampanye telah berhasil disebarkan secara serentak (blast) ke 32 Grup WhatsApp Regional Instanusantara.&#10;• Format Blast: Pengiriman 5 gambar dan 1 video dan teks panduan (caption).&#10;• Status: Telah terkirim ke seluruh admin komunitas regional dan diteruskan ke grup terkait.</textarea>
+            <textarea rows="4" placeholder="Tuliskan keterangan distribusi penyebaran pesan di grup komunitas, format blast, dll..."></textarea>
         </div>
     </div>
 
@@ -205,49 +213,56 @@
             <div class="lampiran-item">
                 <img id="img1" src="">
                 <input type="file" accept="image/*" onchange="previewImage(this, 'img1')">
-                <input type="text" value="Insight IG Feed">
+                <input type="text" value="" placeholder="Keterangan gambar...">
             </div>
             
             <!-- Item 2 -->
             <div class="lampiran-item">
                 <img id="img2" src="">
                 <input type="file" accept="image/*" onchange="previewImage(this, 'img2')">
-                <input type="text" value="Insight Threads">
+                <input type="text" value="" placeholder="Keterangan gambar...">
             </div>
 
             <!-- Item 3 -->
             <div class="lampiran-item">
                 <img id="img3" src="">
                 <input type="file" accept="image/*" onchange="previewImage(this, 'img3')">
-                <input type="text" value="Bukti Blast WA - 1">
+                <input type="text" value="" placeholder="Keterangan gambar...">
             </div>
 
             <!-- Item 4 -->
             <div class="lampiran-item">
                 <img id="img4" src="">
                 <input type="file" accept="image/*" onchange="previewImage(this, 'img4')">
-                <input type="text" value="Bukti Blast WA - 2">
+                <input type="text" value="" placeholder="Keterangan gambar...">
             </div>
 
             <!-- Item 5 -->
             <div class="lampiran-item">
                 <img id="img5" src="">
                 <input type="file" accept="image/*" onchange="previewImage(this, 'img5')">
-                <input type="text" value="Artikel Berita Mikro">
+                <input type="text" value="" placeholder="Keterangan gambar...">
             </div>
             
-            <!-- Item 6 (Kosong untuk cadangan) -->
+            <!-- Item 6 -->
             <div class="lampiran-item">
                 <img id="img6" src="">
                 <input type="file" accept="image/*" onchange="previewImage(this, 'img6')">
-                <input type="text" value="Lain-lain" placeholder="Keterangan gambar...">
+                <input type="text" value="" placeholder="Keterangan gambar...">
             </div>
 
         </div>
     </div>
 
     <div class="footer-note">
-        Laporan ini dibuat secara otomatis berdasarkan data analitik per tanggal <span id="footerDate">20 Juli 2026</span>.
+        Laporan ini dibuat secara otomatis berdasarkan data analitik per tanggal <span id="footerDate"></span>.
+    </div>
+
+    <!-- Tempat Upload Icon Bawah -->
+    <div class="footer-icons">
+        <img id="footerIconsImage" src="" alt="Footer Icons">
+        <input type="file" id="footerIconsInput" accept="image/*" class="hide-on-print" style="font-size: 11px; margin-top: 10px;">
+        <small class="hide-on-print" style="color: #888; margin-top: 2px;">*Upload logo icon_2.png</small>
     </div>
 
     <div class="actions">
@@ -257,8 +272,9 @@
 </div>
 
 <script>
-    // Set format tanggal hari ini 
-    const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    // Set format tanggal hari ini otomatis
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const today = new Date().toLocaleDateString('id-ID', options);
     document.getElementById('tanggalLaporan').value = today;
     document.getElementById('footerDate').innerText = today;
 
@@ -278,7 +294,29 @@
         });
     });
 
-    // Format angka dengan titik (Contoh: 8.479)
+    // Fungsi umum untuk upload gambar (Logo Header & Icon Footer)
+    function setupImageUpload(inputId, imageId) {
+        const input = document.getElementById(inputId);
+        const image = document.getElementById(imageId);
+        if(input && image) {
+            input.addEventListener('change', function() {
+                if (this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        image.src = e.target.result;
+                        image.style.display = 'block';
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+    }
+
+    // Terapkan fungsi upload untuk logo dan icon footer
+    setupImageUpload('logoInputTop', 'logoImageTop');
+    setupImageUpload('footerIconsInput', 'footerIconsImage');
+
+    // Format angka dengan titik (Contoh: 1.000)
     function formatNumberInput(input) {
         let value = input.value.replace(/[^0-9]/g, '');
         if (value !== '') {
@@ -290,7 +328,7 @@
 
     // Kalkulasi Total Tayangan & Interaksi Otomatis
     function calculateTotals() {
-        // Hitung Tayangan (IG + Threads + Web)
+        // Hitung Tayangan 
         let totalTayangan = 0;
         document.querySelectorAll('.tayangan-val').forEach(input => {
             const val = parseFloat(input.value.replace(/\./g, '')) || 0;
@@ -298,7 +336,7 @@
         });
         document.getElementById('totalTayangan').innerText = new Intl.NumberFormat('id-ID').format(totalTayangan);
 
-        // Hitung Interaksi (Likes + Comments + Shares + Saves)
+        // Hitung Interaksi
         let totalInteraksi = 0;
         document.querySelectorAll('.interaksi-val').forEach(input => {
             const val = parseFloat(input.value.replace(/\./g, '')) || 0;
