@@ -12,7 +12,6 @@
         /* Header Section */
         .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
         
-        /* Penyesuaian khusus untuk LOGO.png */
         .header-left .logo-container img { 
             max-width: 250px; 
             max-height: 120px; 
@@ -86,7 +85,7 @@
 
         /* Footer Icons dengan Gambar Upload */
         .footer { text-align: center; padding-top: 10px; border-top: 1px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .footer img { max-height: 25px; display: none; } /* Tinggi disesuaikan biar proporsional */
+        .footer img { max-height: 25px; display: none; } 
 
         /* Buttons */
         .actions { margin-top: 20px; text-align: right; }
@@ -195,7 +194,8 @@ twentyfourcontentstudio@gmail.com
 Detail: IG Feed @instanusantara +
 Blast 32 Grup WA Regional</textarea></td>
                 <td class="col-qty"><input type="number" class="qty" value="1" min="1" onchange="calculateTotal()"></td>
-                <td class="col-price"><input type="number" class="price" value="2500000" min="0" onchange="calculateTotal()"></td>
+                <!-- Input type diubah jadi text agar bisa menerima titik -->
+                <td class="col-price"><input type="text" class="price" value="2.500.000" oninput="formatRupiahInput(this)"></td>
                 <td class="col-total row-total">Rp 2.500.000</td>
                 <td class="col-action hide-on-print"><button class="btn btn-remove" onclick="removeRow(this)">X</button></td>
             </tr>
@@ -214,7 +214,8 @@ Blast 32 Grup WA Regional</textarea></td>
             </tr>
             <tr>
                 <td>DP (Uang Muka)</td>
-                <td><input type="number" id="dpInput" class="dp-input" value="1000000" onchange="calculateTotal()"></td>
+                <!-- Input type diubah jadi text agar bisa menerima titik -->
+                <td><input type="text" id="dpInput" class="dp-input" value="1.000.000" oninput="formatRupiahInput(this)"></td>
             </tr>
             <tr class="sisa-row">
                 <td>Sisa Pelunasan</td>
@@ -302,9 +303,21 @@ Screenshoot blast WA grup</textarea>
     setupImageUpload('ttdHormatInput', 'ttdHormatImage');
     setupImageUpload('footerIconsInput', 'footerIconsImage');
 
-    // Format Rupiah
+    // Format angka ke format mata uang Rupiah standar
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+    }
+
+    // Fungsi menambahkan titik otomatis saat diketik
+    function formatRupiahInput(input) {
+        // Hapus karakter selain angka
+        let value = input.value.replace(/[^0-9]/g, '');
+        if (value !== '') {
+            input.value = new Intl.NumberFormat('id-ID').format(value);
+        } else {
+            input.value = '';
+        }
+        calculateTotal(); // Hitung ulang setiap kali mengetik
     }
 
     // Kalkulasi
@@ -314,7 +327,10 @@ Screenshoot blast WA grup</textarea>
 
         rows.forEach(row => {
             const qty = parseFloat(row.querySelector('.qty').value) || 0;
-            const price = parseFloat(row.querySelector('.price').value) || 0;
+            // Menghilangkan titik sebelum dikalkulasi sistem
+            const priceValue = row.querySelector('.price').value.replace(/\./g, ''); 
+            const price = parseFloat(priceValue) || 0;
+            
             const total = qty * price;
             
             row.querySelector('.row-total').innerText = formatRupiah(total);
@@ -322,7 +338,11 @@ Screenshoot blast WA grup</textarea>
         });
 
         document.getElementById('subTotal').innerText = formatRupiah(subTotal);
-        const dp = parseFloat(document.getElementById('dpInput').value) || 0;
+        
+        // Menghilangkan titik di DP sebelum dikalkulasi
+        const dpValue = document.getElementById('dpInput').value.replace(/\./g, '');
+        const dp = parseFloat(dpValue) || 0;
+        
         document.getElementById('sisaPelunasan').innerText = formatRupiah(subTotal - dp);
     }
 
@@ -342,7 +362,7 @@ Screenshoot blast WA grup</textarea>
             <td class="col-no"></td>
             <td class="col-desc"><textarea rows="2" placeholder="Deskripsi Produk"></textarea></td>
             <td class="col-qty"><input type="number" class="qty" value="1" min="1" onchange="calculateTotal()"></td>
-            <td class="col-price"><input type="number" class="price" value="0" min="0" onchange="calculateTotal()"></td>
+            <td class="col-price"><input type="text" class="price" value="0" oninput="formatRupiahInput(this)"></td>
             <td class="col-total row-total">Rp 0</td>
             <td class="col-action hide-on-print"><button class="btn btn-remove" onclick="removeRow(this)">X</button></td>
         `;
