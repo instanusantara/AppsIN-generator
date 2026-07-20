@@ -6,7 +6,7 @@
     <title>Buku Kas Bendahara Instanusantara</title>
     <style>
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 1000px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         /* Header Layout dengan Logo */
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #df5a35; padding-bottom: 20px; margin-bottom: 20px; }
@@ -30,9 +30,9 @@
 
         /* Input Form */
         .form-box { background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px; display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-        .input-group { display: flex; flex-direction: column; flex: 1; min-width: 150px; }
+        .input-group { display: flex; flex-direction: column; flex: 1; min-width: 140px; }
         .input-group label { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #555; }
-        .input-group input, .input-group select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; outline: none; }
+        .input-group input, .input-group select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; outline: none; background: #fff; }
         .input-group input:focus, .input-group select:focus { border-color: #df5a35; }
         .btn-add { background-color: #df5a35; color: white; border: none; padding: 11px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; height: 40px; }
         .btn-add:hover { background-color: #c94c2a; }
@@ -40,13 +40,17 @@
         /* Table */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
         th { background-color: #333; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
         tr:hover { background-color: #f9f9f9; }
         
         .text-masuk { color: #28a745; font-weight: bold; }
         .text-keluar { color: #dc3545; font-weight: bold; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
+
+        /* Bukti TF Thumbnail di Tabel */
+        .bukti-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; display: none; }
+        .bukti-thumb:hover { opacity: 0.8; }
 
         .btn-delete { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-delete:hover { background-color: #c82333; }
@@ -56,17 +60,24 @@
         .btn-print { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .btn-print:hover { background-color: #0056b3; }
         .btn-reset { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+
+        /* Modal Preview Gambar */
+        .modal { display: none; position: fixed; z-index: 1000; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); text-align: center; }
+        .modal-content { max-width: 80%; max-height: 80vh; border-radius: 6px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .close-modal { position: absolute; top: 20px; right: 35px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: #df5a35; }
         
         /* Print Styles */
         @media print {
             body { background-color: #fff; padding: 0; }
             .container { box-shadow: none; padding: 0; border: none; max-width: 100%; }
-            .form-box, .actions, .col-aksi, .hide-on-print { display: none !important; }
+            .form-box, .actions, .col-aksi, .hide-on-print, .input-bukti-col { display: none !important; }
             .card { color: #000 !important; background-color: #fff !important; border: 1px solid #000; }
             .header { border-bottom-color: #000; }
             th { background-color: #eee !important; color: #000 !important; border: 1px solid #000; }
             td { border: 1px solid #000; }
             .text-masuk, .text-keluar { color: #000 !important; } 
+            .bukti-thumb { display: inline-block !important; border: 1px solid #000; } /* Tetap muncul saat dicetak */
         }
     </style>
 </head>
@@ -124,6 +135,10 @@
             <label>Nominal (Rp)</label>
             <input type="text" id="inputNominal" placeholder="0" oninput="formatRupiahInput(this)">
         </div>
+        <div class="input-group">
+            <label>Bukti TF (Opsional)</label>
+            <input type="file" id="inputBukti" accept="image/*" style="font-size: 12px; padding: 7px;">
+        </div>
         <button class="btn-add" onclick="tambahTransaksi()">+ Tambah</button>
     </div>
 
@@ -131,11 +146,12 @@
     <table id="tabelKas">
         <thead>
             <tr>
-                <th width="15%">Tanggal</th>
-                <th width="35%">Keterangan</th>
-                <th width="20%" class="text-right">Pemasukan</th>
-                <th width="20%" class="text-right">Pengeluaran</th>
-                <th width="10%" class="text-center col-aksi">Aksi</th>
+                <th width="12%">Tanggal</th>
+                <th width="30%">Keterangan</th>
+                <th width="15%" class="text-right">Pemasukan</th>
+                <th width="15%" class="text-right">Pengeluaran</th>
+                <th width="10%" class="text-center">Bukti TF</th>
+                <th width="8%" class="text-center col-aksi">Aksi</th>
             </tr>
         </thead>
         <tbody id="dataBody">
@@ -147,6 +163,12 @@
         <button class="btn-reset" onclick="resetData()">Kosongkan Semua Data</button>
         <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
     </div>
+</div>
+
+<!-- Modal Pop-up untuk Lihat Gambar Bukti TF -->
+<div id="imageModal" class="modal">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg">
 </div>
 
 <script>
@@ -192,10 +214,9 @@
         let totalKeluar = 0;
 
         if (kasData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="color: #999;">Belum ada data transaksi.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color: #999;">Belum ada data transaksi.</td></tr>';
         } else {
             kasData.forEach((item, index) => {
-                // Konversi tanggal ke format rapi (contoh: 20 Jul 2026)
                 const tglObj = new Date(item.tanggal);
                 const tglRapi = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 
@@ -216,10 +237,17 @@
                     `;
                 }
 
+                // Cek apakah ada file bukti TF yang di-upload
+                let buktiHtml = '-';
+                if (item.bukti) {
+                    buktiHtml = `<img src="${item.bukti}" class="bukti-thumb" style="display: inline-block;" onclick="openModal('${item.bukti}')" title="Klik untuk memperbesar">`;
+                }
+
                 tr.innerHTML = `
                     <td>${tglRapi}</td>
                     <td>${item.keterangan}</td>
                     ${tdNominal}
+                    <td class="text-center">${buktiHtml}</td>
                     <td class="text-center col-aksi"><button class="btn-delete" onclick="hapusTransaksi(${index})">Hapus</button></td>
                 `;
                 tbody.appendChild(tr);
@@ -238,50 +266,82 @@
         const tanggal = document.getElementById('inputTanggal').value;
         const jenis = document.getElementById('inputJenis').value;
         const keterangan = document.getElementById('inputKeterangan').value;
-        
-        // Bersihkan titik sebelum disimpan sebagai angka
         const nominalStr = document.getElementById('inputNominal').value.replace(/\./g, '');
         const nominal = parseFloat(nominalStr);
+        const fileInput = document.getElementById('inputBukti');
 
         if (!tanggal || !keterangan || isNaN(nominal) || nominal <= 0) {
-            alert("Harap isi semua kolom dengan benar!");
+            alert("Harap isi tanggal, keterangan, dan nominal dengan benar!");
             return;
         }
 
-        // Masukkan ke array
-        kasData.push({
-            tanggal: tanggal,
-            jenis: jenis,
-            keterangan: keterangan,
-            nominal: nominal
-        });
+        // Fungsi pembantu untuk menyimpan data ke array setelah file terbaca (jika ada)
+        function simpanData(base64Image = '') {
+            kasData.push({
+                tanggal: tanggal,
+                jenis: jenis,
+                keterangan: keterangan,
+                nominal: nominal,
+                bukti: base64Image
+            });
 
-        // Simpan ke Local Storage
-        localStorage.setItem('bendaharaInstanusantara', JSON.stringify(kasData));
-        
-        // Bersihkan form
-        document.getElementById('inputKeterangan').value = '';
-        document.getElementById('inputNominal').value = '';
-        
-        // Perbarui tampilan
-        updateUI();
+            localStorage.setItem('bendaharaInstanusantara', JSON.stringify(kasData));
+            
+            // Reset form
+            document.getElementById('inputKeterangan').value = '';
+            document.getElementById('inputNominal').value = '';
+            document.getElementById('inputBukti').value = '';
+            
+            updateUI();
+        }
+
+        // Jika user meng-upload gambar bukti TF
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                simpanData(e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            simpanData('');
+        }
     }
 
     // Hapus transaksi
     function hapusTransaksi(index) {
         if (confirm("Yakin ingin menghapus transaksi ini?")) {
-            kasData.splice(index, 1); // Hapus 1 item dari array
-            localStorage.setItem('bendaharaInstanusantara', JSON.stringify(kasData)); // Update storage
+            kasData.splice(index, 1);
+            localStorage.setItem('bendaharaInstanusantara', JSON.stringify(kasData));
             updateUI();
         }
     }
 
     // Kosongkan semua data
     function resetData() {
-        if (confirm("PERINGATAN! Ini akan menghapus SEMUA data buku kas. Pastikan sudah dicetak/PDF sebelum dihapus. Lanjutkan?")) {
+        if (confirm("PERINGATAN! Ini akan menghapus SEMUA data buku kas. Lanjutkan?")) {
             kasData = [];
             localStorage.removeItem('bendaharaInstanusantara');
             updateUI();
+        }
+    }
+
+    // Modal Functions untuk Preview Gambar
+    function openModal(imgSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        modal.style.display = "block";
+        modalImg.src = imgSrc;
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = "none";
+    }
+
+    // Tutup modal jika klik di luar gambar
+    window.onclick = function(event) {
+        const modal = document.getElementById('imageModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
     }
 
