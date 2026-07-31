@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Surat Keterangan Kerja</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for printing */
+        @media print {
+            body {
+                background-color: white;
+            }
+            #controls-panel {
+                display: none !important; /* Hide controls when printing */
+            }
+            #document-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+        
+        /* A4 Paper styling for screen preview */
+        .a4-paper {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .image-placeholder {
+            border: 2px dashed #cbd5e1;
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .image-placeholder:hover {
+            border-color: #94a3b8;
+            background-color: #f1f5f9;
+        }
+        
+        .uploaded-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        
+        <!-- Controls Panel (Left side) -->
+        <div id="controls-panel" class="w-full md:w-1/3 lg:w-1/4 bg-white p-6 shadow-lg z-10 h-screen overflow-y-auto sticky top-0">
+            <h2 class="text-2xl font-bold mb-6 text-indigo-700 border-b pb-2">Pengaturan Surat</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 mb-3">Detail Surat</h3>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Judul Surat</label>
+                        <input type="text" id="input-judul" value="Surat Keterangan Kerja Fotografer Komunitas" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('judul', this.value)">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Surat</label>
+                        <input type="text" id="input-nomor" value="NO.001/IN/VII/2026" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('nomor', this.value)">
+                    </div>
+                </div>
+
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-green-800 mb-3">Pihak Pertama (Yang Bertanda Tangan)</h3>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                        <input type="text" id="input-ttd-nama" value="Kholik Hanafi" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('ttd-nama', this.value); updateText('ttd-nama-bawah', this.value);">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
+                        <input type="text" id="input-ttd-jabatan" value="Ketua Umum" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('ttd-jabatan', this.value); updateText('ttd-jabatan-bawah', this.value);">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Komunitas</label>
+                        <input type="text" id="input-ttd-komunitas" value="Instanusantara Indonesia" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('ttd-komunitas', this.value); updateText('ttd-komunitas-bawah', this.value); updateText('nama-komunitas-paragraf', this.value);">
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-yellow-800 mb-3">Pihak Kedua (Karyawan/Anggota)</h3>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                        <input type="text" id="input-emp-nama" placeholder="Masukkan nama..." class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('emp-nama', this.value)">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                        <textarea id="input-emp-alamat" rows="2" placeholder="Masukkan alamat..." class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('emp-alamat', this.value)"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ID Member</label>
+                        <input type="text" id="input-emp-id" placeholder="Masukkan ID Member..." class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('emp-id', this.value)">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Posisi</label>
+                            <input type="text" id="input-emp-posisi" value="fotografer" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('emp-posisi', this.value)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sejak Tanggal</label>
+                            <input type="text" id="input-emp-sejak" placeholder="Misal: 1 Januari 2020" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('emp-sejak', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-purple-800 mb-3">Penutup & Tanggal</h3>
+                    
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tempat</label>
+                            <input type="text" id="input-tempat" value="Jakarta" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('tempat', this.value)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                            <input type="text" id="input-tanggal" value="31 Juli 2026" class="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500" oninput="updateText('tanggal', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-3">Gambar (Kop & TTD)</h3>
+                    <p class="text-xs text-gray-500 mb-3">Klik area gambar pada dokumen di sebelah kanan untuk mengunggah gambar langsung.</p>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="document.getElementById('header-upload').click()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
+                            Ganti Kop
+                        </button>
+                        <button onclick="document.getElementById('ttd-upload').click()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
+                            Ganti TTD
+                        </button>
+                    </div>
+                    
+                    <!-- Hidden file inputs -->
+                    <input type="file" id="header-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'header-img', 'header-placeholder')">
+                    <input type="file" id="ttd-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'ttd-img', 'ttd-placeholder')">
+                </div>
+
+                <button onclick="window.print()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg mt-4 shadow transition-colors flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Cetak / Simpan PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Document Preview (Right side) -->
+        <div class="flex-1 bg-gray-200 p-4 md:p-8 overflow-y-auto flex justify-center">
+            
+            <div id="document-container" class="a4-paper text-gray-700 font-serif leading-relaxed" style="color: #4b5563;">
+                
+                <!-- Header / Kop Surat Area -->
+                <div class="w-full flex justify-center mb-6 border-b-2 border-gray-400 pb-4 relative group" style="height: 120px;">
+                    <div id="header-placeholder" class="image-placeholder absolute inset-0 w-full h-full rounded" onclick="document.getElementById('header-upload').click()">
+                        <span class="text-sm">Klik untuk upload Kop Surat / Logo</span>
+                    </div>
+                    <img id="header-img" src="" alt="Kop Surat" class="uploaded-image cursor-pointer relative z-10" onclick="document.getElementById('header-upload').click()" title="Klik untuk mengganti gambar">
+                </div>
+
+                <!-- Document Title -->
+                <div class="text-center mb-10 mt-6">
+                    <h1 id="doc-judul" class="text-2xl font-bold uppercase tracking-wide" style="color: #374151;">Surat Keterangan Kerja Fotografer Komunitas</h1>
+                    <p id="doc-nomor" class="text-lg mt-1" style="color: #4b5563;">NO.001/IN/VII/2026</p>
+                </div>
+
+                <!-- Content Body -->
+                <div class="px-8 text-lg" style="color: #4b5563;">
+                    <p class="mb-4">Yang bertanda tangan dibawah ini :</p>
+                    
+                    <!-- Signatory Info Grid -->
+                    <div class="grid grid-cols-[180px_auto] gap-2 mb-6 ml-4">
+                        <div>Nama</div>
+                        <div>: <span id="doc-ttd-nama" class="font-medium">Kholik Hanafi</span></div>
+                        
+                        <div>Jabatan</div>
+                        <div>: <span id="doc-ttd-jabatan">Ketua Umum</span></div>
+                        
+                        <div>Nama Komunitas</div>
+                        <div>: <span id="doc-ttd-komunitas">Instanusantara Indonesia</span></div>
+                    </div>
+
+                    <p class="mb-4">Dengan ini menyatakan bahwa :</p>
+                    
+                    <!-- Employee Info Grid -->
+                    <div class="grid grid-cols-[180px_auto] gap-2 mb-4 ml-4">
+                        <div>Nama</div>
+                        <div>: <span id="doc-emp-nama" class="min-w-[200px] inline-block border-b border-dashed border-gray-400"></span></div>
+                        
+                        <div>Alamat</div>
+                        <div>: <span id="doc-emp-alamat" class="min-w-[300px] inline-block border-b border-dashed border-gray-400"></span></div>
+                        
+                        <div>ID Member</div>
+                        <div>: <span id="doc-emp-id" class="min-w-[200px] inline-block border-b border-dashed border-gray-400"></span></div>
+                    </div>
+
+                    <p class="mb-6 text-justify">
+                        Telah benar bekerja/aktif sebagai <span id="doc-emp-posisi" class="font-medium">fotografer</span> pada komunitas fotografi 
+                        <span id="doc-nama-komunitas-paragraf">Instanusantara Indonesia</span> sejak 
+                        <span id="doc-emp-sejak" class="min-w-[150px] inline-block border-b border-dashed border-gray-400 text-center"></span>
+                        Hingga saat ini.
+                    </p>
+
+                    <p class="mb-2 text-justify">
+                        Selama bergabung, yang bersangkutan telah menunjukkan dedikasi, tanggung jawab, dan kemampuan yang baik dalam berbagai proyek fotografi komunitas.
+                    </p>
+                    <p class="mb-12 text-justify">
+                        Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.
+                    </p>
+                </div>
+
+                <!-- Signature Section -->
+                <div class="flex justify-end pr-8 mt-12">
+                    <div class="text-center w-64 flex flex-col items-center">
+                        <p class="mb-1 text-lg">
+                            <span id="doc-tempat">Jakarta</span>, 
+                            <span id="doc-tanggal">31 Juli 2026</span>
+                        </p>
+                        <p class="mb-1 text-lg">Hormat Kami,</p>
+                        
+                        <p id="doc-ttd-jabatan-bawah" class="font-bold text-lg" style="color: #374151;">Ketua Umum</p>
+                        <p id="doc-ttd-komunitas-bawah" class="font-bold text-lg mb-2" style="color: #374151;">Instanusantara Indonesia</p>
+                        
+                        <!-- Signature Image Area -->
+                        <div class="w-40 h-32 relative group my-2">
+                            <div id="ttd-placeholder" class="image-placeholder absolute inset-0 w-full h-full rounded" onclick="document.getElementById('ttd-upload').click()">
+                                <span class="text-xs text-center px-2">Klik untuk upload<br>Stempel & TTD</span>
+                            </div>
+                            <img id="ttd-img" src="" alt="Tanda Tangan dan Stempel" class="uploaded-image cursor-pointer relative z-10 mx-auto" onclick="document.getElementById('ttd-upload').click()" title="Klik untuk mengganti gambar">
+                        </div>
+                        
+                        <p id="doc-ttd-nama-bawah" class="font-bold text-xl mt-2" style="color: #374151;">Kholik Hanafi</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to update text in the document based on input fields
+        function updateText(idSuffix, value) {
+            const el = document.getElementById('doc-' + idSuffix);
+            if (el) {
+                // If it's a span that might need a dashed line when empty, handle it
+                if (value.trim() === '' && el.tagName.toLowerCase() === 'span' && el.classList.contains('border-dashed')) {
+                    el.textContent = '';
+                } else {
+                    el.textContent = value;
+                }
+            }
+        }
+
+        // Function to handle image uploads and display them
+        function handleImageUpload(event, imgId, placeholderId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgElement = document.getElementById(imgId);
+                    const placeholderElement = document.getElementById(placeholderId);
+                    
+                    imgElement.src = e.target.result;
+                    imgElement.style.display = 'block';
+                    placeholderElement.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Initialize empty fields on load
+        window.onload = function() {
+            updateText('emp-nama', document.getElementById('input-emp-nama').value);
+            updateText('emp-alamat', document.getElementById('input-emp-alamat').value);
+            updateText('emp-id', document.getElementById('input-emp-id').value);
+            updateText('emp-sejak', document.getElementById('input-emp-sejak').value);
+        };
+    </script>
+</body>
+</html>
