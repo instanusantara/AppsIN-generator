@@ -22,24 +22,24 @@
 
     <!-- Header -->
     <header class="curator-gradient text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-red-600 flex items-center justify-center text-xl shadow-lg border border-red-500">
+        <div class="max-w-5xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-red-600 flex items-center justify-center text-lg sm:text-xl shadow-lg border border-red-500">
                     <i class="fa-solid fa-layer-group"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold leading-tight tracking-wide">Workspace Kurator</h1>
-                    <p class="text-xs text-gray-400 font-medium">Manajemen Antrean POTD Instanusantara</p>
+                    <h1 class="text-lg sm:text-xl font-bold leading-tight tracking-wide">Workspace Kurator</h1>
+                    <p class="text-[10px] sm:text-xs text-gray-400 font-medium">Manajemen Antrean POTD</p>
                 </div>
             </div>
-            <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">
+            <a href="index.html" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors">
                 <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
             </a>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+    <main class="flex-grow container mx-auto px-4 py-6 sm:py-8 max-w-4xl">
         
         <!-- Info Alert -->
         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6 shadow-sm">
@@ -56,7 +56,7 @@
         </div>
 
         <!-- Input Area -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5 mb-6 sm:mb-8">
             <form id="add-form" class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-grow">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
@@ -64,27 +64,27 @@
                     </div>
                     <input type="text" id="ig-url-input" required
                         class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-lg outline-none transition-all text-sm"
-                        placeholder="Paste URL Instagram di sini (contoh: https://www.instagram.com/p/...)">
+                        placeholder="Paste URL Instagram (contoh: https://instagram.com/p/...)">
                 </div>
-                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow flex items-center justify-center gap-2 whitespace-nowrap">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow flex items-center justify-center gap-2 whitespace-nowrap w-full sm:w-auto">
                     <i class="fa-solid fa-plus"></i> Tambah Antrean
                 </button>
             </form>
         </div>
 
         <!-- Dashboard Stats -->
-        <div class="grid grid-cols-3 gap-4 mb-6">
-            <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm text-center">
-                <div class="text-2xl font-bold text-gray-800" id="stat-total">0</div>
-                <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold mt-1">Total Antrean</div>
+        <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+            <div class="bg-white rounded-lg p-2 sm:p-4 border border-gray-200 shadow-sm text-center">
+                <div class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-total">0</div>
+                <div class="text-[9px] sm:text-xs text-gray-500 uppercase tracking-wide font-semibold mt-1">Total</div>
             </div>
-            <div class="bg-green-50 rounded-lg p-4 border border-green-100 shadow-sm text-center">
-                <div class="text-2xl font-bold text-green-700" id="stat-acc">0</div>
-                <div class="text-xs text-green-600 uppercase tracking-wide font-semibold mt-1">ACC (Terpilih)</div>
+            <div class="bg-green-50 rounded-lg p-2 sm:p-4 border border-green-100 shadow-sm text-center">
+                <div class="text-xl sm:text-2xl font-bold text-green-700" id="stat-acc">0</div>
+                <div class="text-[9px] sm:text-xs text-green-600 uppercase tracking-wide font-semibold mt-1">ACC</div>
             </div>
-            <div class="bg-red-50 rounded-lg p-4 border border-red-100 shadow-sm text-center">
-                <div class="text-2xl font-bold text-red-700" id="stat-reject">0</div>
-                <div class="text-xs text-red-600 uppercase tracking-wide font-semibold mt-1">Ditolak</div>
+            <div class="bg-red-50 rounded-lg p-2 sm:p-4 border border-red-100 shadow-sm text-center">
+                <div class="text-xl sm:text-2xl font-bold text-red-700" id="stat-reject">0</div>
+                <div class="text-[9px] sm:text-xs text-red-600 uppercase tracking-wide font-semibold mt-1">Ditolak</div>
             </div>
         </div>
 
@@ -244,49 +244,49 @@
                 const downloaderUrl = `ig-downloader.html?url=${encodeURIComponent(item.url)}`;
 
                 const itemHTML = `
-                    <div class="bg-white rounded-lg p-4 border ${borderClass} fade-in flex flex-col md:flex-row gap-4">
+                    <div class="bg-white rounded-lg p-3 sm:p-4 border ${borderClass} fade-in flex flex-col md:flex-row gap-3 sm:gap-4">
                         
                         <!-- Left Info -->
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-2 mb-2">
+                        <div class="flex-grow min-w-0">
+                            <div class="flex items-center justify-between sm:justify-start gap-2 mb-2">
                                 ${statusBadge}
-                                <span class="text-xs text-gray-400"><i class="fa-regular fa-clock"></i> ${item.timestamp}</span>
+                                <span class="text-[10px] sm:text-xs text-gray-400"><i class="fa-regular fa-clock"></i> ${item.timestamp}</span>
                             </div>
                             
-                            <a href="${item.url}" target="_blank" class="text-sm font-semibold text-blue-600 hover:text-blue-800 break-all mb-2 block w-full max-w-xl">
-                                <i class="fa-solid fa-arrow-up-right-from-square text-xs mr-1"></i> ${getShortDisplay(item.url)}
+                            <a href="${item.url}" target="_blank" class="text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-800 truncate mb-2 block w-full">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i> ${getShortDisplay(item.url)}
                             </a>
                             
                             <!-- Catatan -->
                             <div class="mt-2">
-                                <input type="text" value="${item.note || ''}" placeholder="Tambahkan catatan (misal: 'Konten bagus tapi caption kurang')" 
-                                    class="w-full text-xs p-2 bg-gray-50 border border-gray-200 rounded text-gray-600 focus:outline-none focus:border-blue-400"
+                                <input type="text" value="${item.note || ''}" placeholder="Tambahkan catatan..." 
+                                    class="w-full text-[11px] sm:text-xs p-2 bg-gray-50 border border-gray-200 rounded text-gray-600 focus:outline-none focus:border-blue-400"
                                     onchange="updateNote('${item.id}', this)">
                             </div>
                         </div>
 
                         <!-- Right Actions -->
-                        <div class="flex flex-row md:flex-col justify-end gap-2 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100">
+                        <div class="flex flex-col justify-end gap-2 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100 w-full md:w-auto">
                             
-                            <div class="flex gap-1 justify-end">
-                                <button onclick="updateStatus('${item.id}', 'acc')" class="${isAcc ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-green-100 hover:text-green-600'} px-3 py-1.5 rounded text-xs font-bold transition-colors tooltip" title="Setujui">
+                            <div class="grid grid-cols-3 md:flex gap-1 justify-end">
+                                <button onclick="updateStatus('${item.id}', 'acc')" class="${isAcc ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-green-100 hover:text-green-600'} px-2 py-2 md:py-1.5 rounded text-xs font-bold transition-colors tooltip flex justify-center items-center" title="Setujui">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
-                                <button onclick="updateStatus('${item.id}', 'reject')" class="${isReject ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600'} px-3 py-1.5 rounded text-xs font-bold transition-colors tooltip" title="Tolak">
+                                <button onclick="updateStatus('${item.id}', 'reject')" class="${isReject ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600'} px-2 py-2 md:py-1.5 rounded text-xs font-bold transition-colors tooltip flex justify-center items-center" title="Tolak">
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
-                                <button onclick="updateStatus('${item.id}', 'pending')" class="${isPending ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'} px-3 py-1.5 rounded text-xs font-bold transition-colors tooltip" title="Tunda">
+                                <button onclick="updateStatus('${item.id}', 'pending')" class="${isPending ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'} px-2 py-2 md:py-1.5 rounded text-xs font-bold transition-colors tooltip flex justify-center items-center" title="Tunda">
                                     <i class="fa-solid fa-rotate-left"></i>
                                 </button>
                             </div>
                             
                             <div class="flex gap-1 mt-auto">
                                 <!-- Send to Downloader btn -->
-                                <button onclick="sendToDownloader('${item.url}')" class="flex-grow bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-2 rounded text-xs font-bold transition-colors flex items-center justify-center gap-1">
-                                    <i class="fa-solid fa-cloud-arrow-down"></i> Ke Downloader
+                                <button onclick="sendToDownloader('${item.url}')" class="flex-grow bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-2 sm:px-3 py-2 rounded text-[11px] sm:text-xs font-bold transition-colors flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-cloud-arrow-down"></i> <span class="hidden sm:inline">Ke</span> Downloader
                                 </button>
                                 
-                                <button onclick="deleteItem('${item.id}')" class="bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 border border-gray-200 px-3 py-2 rounded text-xs transition-colors">
+                                <button onclick="deleteItem('${item.id}')" class="bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 border border-gray-200 px-3 py-2 rounded text-xs transition-colors flex items-center justify-center">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
