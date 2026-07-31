@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IN Curator Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .curator-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="curator-gradient text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-red-600 flex items-center justify-center text-xl shadow-lg border border-red-500">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight tracking-wide">Workspace Kurator</h1>
+                    <p class="text-xs text-gray-400 font-medium">Manajemen Antrean POTD Instanusantara</p>
+                </div>
+            </div>
+            <a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Info Alert -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6 shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fa-solid fa-circle-info text-blue-500"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-blue-700">
+                        <strong>Cara Pakai:</strong> Paste link postingan IG calon POTD di sini. Kumpulkan, seleksi (kasih label), lalu klik tombol "Download" untuk mengirimnya ke IG Downloader. Data tersimpan di browser perangkat Anda.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-8">
+            <form id="add-form" class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-grow">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <input type="text" id="ig-url-input" required
+                        class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-lg outline-none transition-all text-sm"
+                        placeholder="Paste URL Instagram di sini (contoh: https://www.instagram.com/p/...)">
+                </div>
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow flex items-center justify-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-plus"></i> Tambah Antrean
+                </button>
+            </form>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm text-center">
+                <div class="text-2xl font-bold text-gray-800" id="stat-total">0</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold mt-1">Total Antrean</div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4 border border-green-100 shadow-sm text-center">
+                <div class="text-2xl font-bold text-green-700" id="stat-acc">0</div>
+                <div class="text-xs text-green-600 uppercase tracking-wide font-semibold mt-1">ACC (Terpilih)</div>
+            </div>
+            <div class="bg-red-50 rounded-lg p-4 border border-red-100 shadow-sm text-center">
+                <div class="text-2xl font-bold text-red-700" id="stat-reject">0</div>
+                <div class="text-xs text-red-600 uppercase tracking-wide font-semibold mt-1">Ditolak</div>
+            </div>
+        </div>
+
+        <!-- List Header & Actions -->
+        <div class="flex justify-between items-end mb-4">
+            <h2 class="text-lg font-bold text-gray-800">Daftar Kurasi Anda</h2>
+            <button id="clear-all-btn" class="text-xs text-red-500 hover:text-red-700 font-medium">
+                <i class="fa-solid fa-trash-can mr-1"></i> Kosongkan Daftar
+            </button>
+        </div>
+
+        <!-- Curation List -->
+        <div id="curation-list" class="space-y-3">
+            <!-- Item akan di-render di sini oleh JavaScript -->
+            
+            <div id="empty-state" class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
+                <div class="text-gray-300 mb-3 text-4xl"><i class="fa-solid fa-inbox"></i></div>
+                <p class="text-gray-500 font-medium">Belum ada antrean foto.</p>
+                <p class="text-sm text-gray-400 mt-1">Mulai masukkan link Instagram di atas.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Data Structure: array of objects { id, url, status (pending, acc, reject), note, timestamp }
+        let curationData = JSON.parse(localStorage.getItem('in_curation_data')) || [];
+        
+        // DOM Elements
+        const form = document.getElementById('add-form');
+        const inputUrl = document.getElementById('ig-url-input');
+        const listContainer = document.getElementById('curation-list');
+        const emptyState = document.getElementById('empty-state');
+        
+        const statTotal = document.getElementById('stat-total');
+        const statAcc = document.getElementById('stat-acc');
+        const statReject = document.getElementById('stat-reject');
+
+        // Initial Render
+        renderList();
+
+        // Add New Item
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const url = inputUrl.value.trim();
+            if(!url) return;
+
+            const newItem = {
+                id: Date.now().toString(),
+                url: url,
+                status: 'pending',
+                note: '',
+                timestamp: new Date().toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' })
+            };
+
+            curationData.unshift(newItem); // Add to beginning
+            saveData();
+            inputUrl.value = '';
+            renderList();
+        });
+
+        // Function to update status
+        window.updateStatus = function(id, newStatus) {
+            const item = curationData.find(i => i.id === id);
+            if(item) {
+                item.status = newStatus;
+                saveData();
+                renderList();
+            }
+        };
+
+        // Function to update note
+        window.updateNote = function(id, noteElement) {
+            const item = curationData.find(i => i.id === id);
+            if(item) {
+                item.note = noteElement.value;
+                saveData();
+            }
+        };
+
+        // Function to delete item
+        window.deleteItem = function(id) {
+            if(confirm('Hapus item ini dari daftar kurasi?')) {
+                curationData = curationData.filter(i => i.id !== id);
+                saveData();
+                renderList();
+            }
+        };
+        
+        // Clear all
+        document.getElementById('clear-all-btn').addEventListener('click', () => {
+            if(curationData.length === 0) return;
+            if(confirm('PERHATIAN: Anda yakin ingin menghapus SEMUA daftar kurasi? Data tidak bisa dikembalikan.')) {
+                curationData = [];
+                saveData();
+                renderList();
+            }
+        });
+
+        // Helper: Extract username/shortcode from URL for display
+        function getShortDisplay(url) {
+            try {
+                // Try to get shortcode like /p/XXXXX/
+                const match = url.match(/\/(p|reel|tv)\/([a-zA-Z0-9_-]+)/);
+                if (match && match[2]) return `Post: ${match[2]}`;
+                return url.length > 40 ? url.substring(0, 40) + '...' : url;
+            } catch(e) { return "Instagram Link"; }
+        }
+
+        // Save to Local Storage
+        function saveData() {
+            localStorage.setItem('in_curation_data', JSON.stringify(curationData));
+        }
+
+        // Render the list and update stats
+        function renderList() {
+            // Update Stats
+            statTotal.textContent = curationData.length;
+            statAcc.textContent = curationData.filter(i => i.status === 'acc').length;
+            statReject.textContent = curationData.filter(i => i.status === 'reject').length;
+
+            if (curationData.length === 0) {
+                emptyState.style.display = 'block';
+                // Remove all item elements
+                Array.from(listContainer.children).forEach(child => {
+                    if(child.id !== 'empty-state') child.remove();
+                });
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            
+            // Clear current list (except empty state)
+            Array.from(listContainer.children).forEach(child => {
+                if(child.id !== 'empty-state') child.remove();
+            });
+
+            // Generate HTML for each item
+            curationData.forEach(item => {
+                const isAcc = item.status === 'acc';
+                const isReject = item.status === 'reject';
+                const isPending = item.status === 'pending';
+
+                let statusBadge = `<span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded font-bold border border-gray-200">PENDING</span>`;
+                let borderClass = 'border-gray-200';
+                
+                if (isAcc) {
+                    statusBadge = `<span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold border border-green-200"><i class="fa-solid fa-check mr-1"></i>ACC</span>`;
+                    borderClass = 'border-green-300 shadow-sm';
+                } else if (isReject) {
+                    statusBadge = `<span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold border border-red-200"><i class="fa-solid fa-xmark mr-1"></i>REJECT</span>`;
+                    borderClass = 'border-red-200 opacity-75';
+                }
+
+                // Bridge to IG Downloader tool
+                // Assuming ig-downloader is in the same directory, or adjust path if needed
+                const downloaderUrl = `ig-downloader.html?url=${encodeURIComponent(item.url)}`;
+
+                const itemHTML = `
+                    <div class="bg-white rounded-lg p-4 border ${borderClass} fade-in flex flex-col md:flex-row gap-4">
+                        
+                        <!-- Left Info -->
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-2 mb-2">
+                                ${statusBadge}
+                                <span class="text-xs text-gray-400"><i class="fa-regular fa-clock"></i> ${item.timestamp}</span>
+                            </div>
+                            
+                            <a href="${item.url}" target="_blank" class="text-sm font-semibold text-blue-600 hover:text-blue-800 break-all mb-2 block w-full max-w-xl">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs mr-1"></i> ${getShortDisplay(item.url)}
+                            </a>
+                            
+                            <!-- Catatan -->
+                            <div class="mt-2">
+                                <input type="text" value="${item.note || ''}" placeholder="Tambahkan catatan (misal: 'Konten bagus tapi caption kurang')" 
+                                    class="w-full text-xs p-2 bg-gray-50 border border-gray-200 rounded text-gray-600 focus:outline-none focus:border-blue-400"
+                                    onchange="updateNote('${item.id}', this)">
+                            </div>
+                        </div>
+
+                        <!-- Right Actions -->
+                        <div class="flex flex-row md:flex-col justify-end gap-2 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100">
+                            
+                            <div class="flex gap-1 justify-end">
+                                <button onclick="updateStatus('${item.id}', 'acc')" class="${isAcc ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-green-100 hover:text-green-600'} px-3 py-1.5 rounded text-xs font-bold transition-colors tooltip" title="Setujui">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button onclick="updateStatus('${item.id}', 'reject')" class="${isReject ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600'} px-3 py-1.5 rounded text-xs font-bold transition-colors tooltip" title="Tolak">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                                <button onclick="updateStatus('${item.id}', 'pending')" class="${isPending ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'} px-3 py-1.5 rounded text-xs font-bold transition-colors tooltip" title="Tunda">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="flex gap-1 mt-auto">
+                                <!-- Send to Downloader btn -->
+                                <button onclick="sendToDownloader('${item.url}')" class="flex-grow bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-2 rounded text-xs font-bold transition-colors flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-cloud-arrow-down"></i> Ke Downloader
+                                </button>
+                                
+                                <button onclick="deleteItem('${item.id}')" class="bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 border border-gray-200 px-3 py-2 rounded text-xs transition-colors">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                listContainer.insertAdjacentHTML('beforeend', itemHTML);
+            });
+        }
+        
+        // Function to bridge to IG Downloader
+        window.sendToDownloader = function(url) {
+            // Karena kita tau URL nya ada di ig-downloader.html, kita lemparkan sebagai parameter URL (GET request)
+            // Contoh: ig-downloader.html?url=https...
+            
+            // Perlu memastikan apakah ig-downloader.html dipanggil dengan nama yang sama di GitHub.
+            const targetUrl = 'ig-downloader.html?auto_url=' + encodeURIComponent(url);
+            window.open(targetUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
