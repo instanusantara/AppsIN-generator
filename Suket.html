@@ -149,21 +149,27 @@
                 </div>
 
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <h3 class="font-semibold text-gray-800 mb-3">Gambar (Kop & TTD)</h3>
+                    <h3 class="font-semibold text-gray-800 mb-3">Gambar (Kop, TTD & Stempel)</h3>
                     <p class="text-xs text-gray-500 mb-3">Klik area gambar pada dokumen di sebelah kanan untuk mengunggah gambar langsung.</p>
                     
-                    <div class="flex space-x-2">
-                        <button onclick="document.getElementById('header-upload').click()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
-                            Ganti Kop
+                    <div class="flex flex-col space-y-2">
+                        <button onclick="document.getElementById('header-upload').click()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
+                            Ganti Kop Surat
                         </button>
-                        <button onclick="document.getElementById('ttd-upload').click()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
-                            Ganti TTD
-                        </button>
+                        <div class="flex space-x-2">
+                            <button onclick="document.getElementById('ttd-upload').click()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
+                                Ganti TTD
+                            </button>
+                            <button onclick="document.getElementById('stempel-upload').click()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded text-sm transition-colors">
+                                Ganti Stempel
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Hidden file inputs -->
                     <input type="file" id="header-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'header-img', 'header-placeholder')">
                     <input type="file" id="ttd-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'ttd-img', 'ttd-placeholder')">
+                    <input type="file" id="stempel-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'stempel-img', 'stempel-placeholder')">
                 </div>
 
                 <button onclick="window.print()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg mt-4 shadow transition-colors flex items-center justify-center">
@@ -251,15 +257,28 @@
                         <p id="doc-ttd-jabatan-bawah" class="font-bold text-lg" style="color: #374151;">Ketua Umum</p>
                         <p id="doc-ttd-komunitas-bawah" class="font-bold text-lg mb-2" style="color: #374151;">Instanusantara Indonesia</p>
                         
-                        <!-- Signature Image Area -->
-                        <div class="w-40 h-32 relative group my-2">
-                            <div id="ttd-placeholder" class="image-placeholder absolute inset-0 w-full h-full rounded" onclick="document.getElementById('ttd-upload').click()">
-                                <span class="text-xs text-center px-2">Klik untuk upload<br>Stempel & TTD</span>
+                        <!-- Signature & Stamp Area -->
+                        <div class="w-48 h-32 relative group my-2 flex justify-center items-center">
+                            
+                            <!-- Stempel (Background/Layer bawah) -->
+                            <div class="w-32 h-32 absolute left-2 opacity-80 z-10">
+                                <div id="stempel-placeholder" class="image-placeholder absolute inset-0 w-full h-full rounded-full border-dashed" onclick="document.getElementById('stempel-upload').click()">
+                                    <span class="text-[10px] text-center px-1">Upload<br>Stempel</span>
+                                </div>
+                                <img id="stempel-img" src="" alt="Stempel" class="uploaded-image cursor-pointer w-full h-full object-contain" onclick="document.getElementById('stempel-upload').click()" title="Klik untuk mengganti stempel">
                             </div>
-                            <img id="ttd-img" src="" alt="Tanda Tangan dan Stempel" class="uploaded-image cursor-pointer relative z-10 mx-auto" onclick="document.getElementById('ttd-upload').click()" title="Klik untuk mengganti gambar">
+
+                            <!-- Tanda Tangan (Foreground/Layer Atas) -->
+                            <div class="w-40 h-24 absolute right-0 z-20">
+                                <div id="ttd-placeholder" class="image-placeholder absolute inset-0 w-full h-full rounded" onclick="document.getElementById('ttd-upload').click()">
+                                    <span class="text-xs text-center px-2">Upload<br>TTD</span>
+                                </div>
+                                <img id="ttd-img" src="" alt="Tanda Tangan" class="uploaded-image cursor-pointer w-full h-full object-contain drop-shadow-sm" onclick="document.getElementById('ttd-upload').click()" title="Klik untuk mengganti tanda tangan">
+                            </div>
+
                         </div>
                         
-                        <p id="doc-ttd-nama-bawah" class="font-bold text-xl mt-2" style="color: #374151;">Kholik Hanafi</p>
+                        <p id="doc-ttd-nama-bawah" class="font-bold text-xl mt-2 relative z-30" style="color: #374151;">Kholik Hanafi</p>
                     </div>
                 </div>
 
